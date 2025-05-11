@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.tidsrapport.backend.api.service.TaskService;
 import com.tidsrapport.backend.api.model.Task;
+import com.tidsrapport.backend.api.dto.TaskDto;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -21,70 +22,57 @@ public class TaskController {
     }
 
     // GET /api/tasks
-    @GetMapping
-    public List<Task> getTasks() {
-        return service.getAllTasks();
-    }
+   @GetMapping
+public List<TaskDto> getTasks() {
+    return service.getAllTasks().stream()
+                  .map(TaskDto::new)
+                  .toList();
+}
 
-    // GET /api/tasks/{id}
-    @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") String id) {
-        return service.getTaskById(id)
-                      .map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
-    }
+   // GET /api/tasks/{id}
+@GetMapping("/{id}")
+public ResponseEntity<TaskDto> getTaskById(@PathVariable("id") String id) {
+    return service.getTaskById(id)
+                  .map(task -> ResponseEntity.ok(new TaskDto(task)))
+                  .orElse(ResponseEntity.notFound().build());
+}
+
 
     // POST /api/tasks
-    @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return service.createTask(task);
-    }
+   @PostMapping
+public TaskDto createTask(@RequestBody Task task) {
+    Task saved = service.createTask(task);
+    return new TaskDto(saved);
+}
 
-    // PUT /api/tasks/{id}
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(
-            @PathVariable("id") String id,
-            @RequestBody Task updatedTask
-    ) {
-        return service.updateTask(id, updatedTask)
-                      .map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
-    }
 
-    // PATCH /api/tasks/{id}
-    @PatchMapping("/{id}")
-    public ResponseEntity<Task> patchTask(
-            @PathVariable("id") String id,
-            @RequestBody Map<String, Object> updates
-    ) {
-        // 1) Hämta eventuell Task
-        Optional<Task> maybeExisting = service.getTaskById(id);
-        if (maybeExisting.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Task existing = maybeExisting.get();
+  @PutMapping("/{id}")
+public ResponseEntity<TaskDto> updateTask(
+        @PathVariable("id") String id,
+        @RequestBody Task updatedTask
+) {
+    return service.updateTask(id, updatedTask)
+                  .map(t -> ResponseEntity.ok(new TaskDto(t)))
+                  .orElse(ResponseEntity.notFound().build());
+}
 
-        // 2) Applicera bara de fält som finns i request-body
-        if (updates.containsKey("categoryId")) {
-            existing.setCategoryId((String) updates.get("categoryId"));
-        }
-        if (updates.containsKey("startTime")) {
-            // Vi förutsätter att klienten skickar en ISO-tidssträng, t.ex. "2025-05-09T10:15:30+02:00"
-            existing.setStartTime((String) updates.get("startTime"));
-        }
-        if (updates.containsKey("endTime")) {
-            existing.setEndTime((String) updates.get("endTime"));
-        }
+   @PatchMapping("/{id}")
+public ResponseEntity<TaskDto> patchTask(
+        @PathVariable("id") String id,
+        @RequestBody Map<String, Object> updates
+) {
+    Optional<Task> maybeExisting = service.getTaskById(id);
+    if (maybeExisting.isEmpty()) return ResponseEntity.notFound().build();
 
-        // 3) Spara via din updateTask-metod
-        Optional<Task> maybePatched = service.updateTask(id, existing);
-        if (maybePatched.isPresent()) {
-            return ResponseEntity.ok(maybePatched.get());
-        } else {
-            // Om något gick fel vid uppdateringen
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+    Task existing = maybeExisting.get();
+    if (updates.containsKey("categoryId")) existing.setCategoryId((String) updates.get("categoryId"));
+    if (updates.containsKey("startTime"))  existing.setStartTime((String) updates.get("startTime"));
+    if (updates.containsKey("endTime"))    existing.setEndTime((String) updates.get("endTime"));
+
+    return service.updateTask(id, existing)
+                  .map(t -> ResponseEntity.ok(new TaskDto(t)))
+                  .orElse(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+}
 
     // DELETE /api/tasks/{id}
     @DeleteMapping("/{id}")

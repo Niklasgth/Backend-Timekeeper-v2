@@ -1,5 +1,6 @@
 package com.tidsrapport.backend.api.controller;
 
+import com.tidsrapport.backend.api.dto.TaskCategoryDto;
 import com.tidsrapport.backend.api.model.TaskCategory;
 import com.tidsrapport.backend.api.service.TaskCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,17 @@ public class TaskCategoryController {
 
     // Hämta alla kategorier
     @GetMapping
-    public List<TaskCategory> getAllCategories() {
-        return taskCategoryService.getAllCategories();
+  public List<TaskCategoryDto> getCategories() {
+        return taskCategoryService.getAllCategories().stream()
+         .map(TaskCategoryDto::new)
+                  .toList();
     }
 
     // Hämta kategori med id
     @GetMapping("/{id}")
-    public TaskCategory getCategoryById(@PathVariable String id) {
-        return taskCategoryService.getCategoryById(id);
-    }
+    public TaskCategoryDto getCategoryById(@PathVariable String id) {
+    return new TaskCategoryDto(taskCategoryService.getCategoryById(id));
+}
 
     // Skapa en ny kategori
     @PostMapping
