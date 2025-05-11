@@ -28,7 +28,7 @@ detta ären del av min skoluppgift under utbildningen 2024-2025
 {
   "_id": "ObjectId",
   "categoryId": "string",
-  "categoryName": "string", // redundans för frontendvisning
+  "categoryName": "string", 
   "startTime": "ISO-8601 timestamp",
   "endTime": "ISO-8601 timestamp",
   "duration": "number (sekunder)"
