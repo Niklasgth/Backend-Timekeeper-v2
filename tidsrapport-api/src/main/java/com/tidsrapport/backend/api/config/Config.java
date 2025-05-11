@@ -10,12 +10,12 @@ public class Config implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry
-          // Applicera CORS-regler på alla endpoints under /api/
           .addMapping("/api/**")
-          // Tillåter frontend-apps ursprung
-          .allowedOrigins("http://localhost:5173")
-          // la in alla crud då de kan behövas, fick tips om options ockås då den i spring checkar interna operationer vid anrop.
-          .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE");
-          
+          .allowedOrigins(
+              "http://localhost:5173",
+              "https://tidsrapport-front-xailp.ondigitalocean.app"
+          )
+          .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+          .allowedHeaders("*");
     }
 }
