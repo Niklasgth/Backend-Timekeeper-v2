@@ -12,8 +12,7 @@ public class Config implements WebMvcConfigurer {
         registry
           .addMapping("/api/**")
           .allowedOrigins(
-              "http://localhost:5173",
-              "https://tidsrapport-front-xailp.ondigitalocean.app"
+              "http://localhost:5173"
           )
           .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
           .allowedHeaders("*");
