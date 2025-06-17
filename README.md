@@ -5,12 +5,12 @@ detta ären del av min skoluppgift under utbildningen 2024-2025
 
 ## Funktionalitet
 
-- 📋 Hantera arbetsuppgifter (`Task`) med start- och stopptid samt koppling till kategori
-- 🗂️ Stöd för arbetskategorier (t.ex. *Läsa*, *Programmera*, *Lunch*, *Paus*)
-- 🧠 Statistik-API för att summera tid per kategori
-- ✅ REST API med CRUD-stöd
-- 🌍 CORS-stöd för frontend-kommunikation
-- 🐳 Docker-kompatibel för deployment
+-  Hantera arbetsuppgifter (`Task`) med start- och stopptid samt koppling till kategori
+-  Stöd för arbetskategorier (t.ex. *Läsa*, *Programmera*, *Lunch*, *Paus*)
+-  Statistik-API för att summera tid per kategori
+-  REST API med CRUD-stöd
+-  CORS-stöd för frontend-kommunikation
+-  Docker-kompatibel för deployment
 
 ## Teknikstack
 
@@ -64,7 +64,7 @@ detta ären del av min skoluppgift under utbildningen 2024-2025
 | POST        | Lägg till ny kategori        |
 | PUT /{id}   | Uppdatera namn på kategori   |
 
-> ⚠️ Kategorier kan **inte raderas**, men kan redigeras.
+>  Kategorier kan **inte raderas**, men kan redigeras.
 
 ## Miljövariabler
 
